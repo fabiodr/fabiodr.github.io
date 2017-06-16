@@ -1,0 +1,24 @@
+{
+  "name": "fabiodr.github.io",
+  "description": "fabiodr.github.io",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fabiodr/fabiodr.github.io"
+  },
+  "scripts": {
+    "start": "budo --live --verbose --port 3000 --open",
+    "deploy": "ghpages",
+    "ghpages": "ghpages"
+  },
+  "devDependencies": {
+    "budo": "^7.0.0",
+    "ghpages": "0.0.10"
+  },
+  "keywords": [
+    "aframe",
+    "webvr",
+    "vr"
+  ]
+}
