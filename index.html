@@ -33,11 +33,12 @@
 
     <a-entity random-entity-generator="mixin: sphere blue;"></a-entity>
 
+    <!--origin: 0, 0, -1;-->
     <a-entity position="0 .6 4">
       <a-camera id="camera">
         <a-entity 
-          cursor
-          raycaster="far: 100; objects: .intersectable; showLine: true; origin: 0, 0, -1;"
+          cursor="downEvents: touchstart; upEvents: touchend;"
+          raycaster="far: 100; objects: .intersectable; showLine: true;"  
           geometry="primitive: ring; radiusOuter: 0.015; radiusInner: 0.01; segmentsTheta: 32"
           material="color: #283644; shader: flat" position="0 0 -0.75"></a-entity>
       </a-camera>
