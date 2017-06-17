@@ -8,13 +8,16 @@
     "url": "https://github.com/fabiodr/fabiodr.github.io"
   },
   "scripts": {
-    "start": "budo --live --verbose --port 3000 --open",
+    "start": "budo index.js:bundle.js --live --verbose --port 3000 --open",
+    "build": "browserify index.js | uglifyjs -cm > bundle.js",
     "deploy": "ghpages",
     "ghpages": "ghpages"
   },
   "devDependencies": {
-    "budo": "^7.0.0",
-    "ghpages": "0.0.10"
+    "browserify": "^14.4.0",
+    "budo": "^10.0.3",
+    "ghpages": "0.0.10",
+    "uglify-js": "^3.0.17"
   },
   "keywords": [
     "aframe",

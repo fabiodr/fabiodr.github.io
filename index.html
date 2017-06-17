@@ -6,18 +6,19 @@
   <title>VR-Prototype</title>
   <meta name="description" content="VR-Prototype">
   <!--<script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>-->
-  <script src="/lib/aframe-master.js"></script>
+  <!--<script src="/lib/aframe-master.js"></script>
   <script src="/components/intersectColorChange.js"></script>
   <script src="/components/randomEntityGenerator.js"></script>
-  <script src="/lib/aframe-mouse-cursor-component.js"></script>
+  <script src="/lib/aframe-mouse-cursor-component.js"></script>-->
 </head>
 
 <body>
+  <script src="bundle.js"></script>
   <a-scene stats>
     <a-assets>
-      <audio id="blip1" src="/assets/321103__nsstudios__blip1.wav"></audio>
-      <audio id="blip2" src="/assets/321104__nsstudios__blip2.wav"></audio>
-      <audio id="shot" src="/assets/shot.ogg"></audio>
+      <audio id="blip1" src="/assets/sound/321103__nsstudios__blip1.wav"></audio>
+      <audio id="blip2" src="/assets/sound/321104__nsstudios__blip2.wav"></audio>
+      <audio id="shot" src="/assets/sound/shot.ogg"></audio>
       <a-mixin id="cube" geometry="primitive: box"></a-mixin>
       <a-mixin id="cube-hovered" material="color: #CC435F"></a-mixin>
       <a-mixin id="cube-selected" material="color: #876A96"></a-mixin>
