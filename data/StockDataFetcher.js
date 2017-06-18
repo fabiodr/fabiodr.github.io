@@ -2,7 +2,7 @@ var d3 = require('d3');
 
 window.stockData = null;
 
-window.StockDataFetcher = new function () {
+window.stockDataFetcher = new function () {
   var that = this;
 
   this.prepareStockData = function (data) {
@@ -35,7 +35,7 @@ window.StockDataFetcher = new function () {
     d3.csv('/assets/data/GetDayStockData.csv', function (data) {
       //data = data.slice(0, 50);
       window.stockData = that.prepareStockData(data);
-      console.log(window.stockData);
+      //console.log(window.stockData);
       callback(window.stockData);
     });
   }

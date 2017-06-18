@@ -17,6 +17,10 @@ acorn@^4.0.3:
   version "4.0.13"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-4.0.13.tgz#105495ae5361d697bd195c825192e1ad7f253787"
 
+aframe-cubemap-component@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/aframe-cubemap-component/-/aframe-cubemap-component-0.1.1.tgz#f63278b727800668b15b65554b6b5ee312dc5de2"
+
 aframe-orbit-controls-component-2@^0.1.7:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/aframe-orbit-controls-component-2/-/aframe-orbit-controls-component-2-0.1.7.tgz#832cf3cf78a528d0946fc8abac0630854eccc6e1"

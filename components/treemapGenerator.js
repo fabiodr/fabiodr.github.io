@@ -69,7 +69,7 @@ AFRAME.registerComponent('treemap-generator', {
     var that = this;
 
     console.log('init treemap-generator');
-    StockDataFetcher.get(function (data) {
+    stockDataFetcher.get(function (data) {
       var format = d3.format(",d");
 
       var heightExtent = d3.extent(data, function (d) {
@@ -91,14 +91,16 @@ AFRAME.registerComponent('treemap-generator', {
       var treemap = d3.treemap()
         .tile(d3.treemapSquarify) //treemapSquarify / treemapSliceDice / treemapBinary
         .size([width, height])
-        .paddingInner(70)
-        .paddingOuter(offset)
-        .paddingTop(100)
+        .paddingInner(100)
+        //.paddingOuter(offset)
+        //.paddingTop(50)
         .round(false);
 
+
+      var threshold = 0;
       var root = stratify(data)
-        .sum(function (d) { return d[areaDimension]; })
-        .sort(function (a, b) { return b.height - a.height || b[areaDimension] - a[areaDimension]; });
+        .sum(function (d) { return d[areaDimension] + threshold; })
+        .sort(function (a, b) { return b.height - a.height || (b[areaDimension] + threshold) - (a[areaDimension] + threshold); });
 
       treemap(root);
 
@@ -144,11 +146,11 @@ AFRAME.registerComponent('treemap-generator', {
     var zSize = (y1 - y0);
     var x = xInitial + x0 + xSize / 2;
     var z = zInitial + y0 + zSize / 2;
-    var scaledHeight = 0.1;
+    var scaledHeight;
     var color;
     var el;
 
-    if (d.depth > 1) {
+    if (d.depth > 1) { // companies
       var rawHeight = d.data[heightDimension.key];
       scaledHeight = heightDimension.scale(rawHeight);
       scaledHeight = clampExtent(scaledHeight, -maxHeight, maxHeight);
@@ -162,38 +164,89 @@ AFRAME.registerComponent('treemap-generator', {
       //console.log('height', rawHeight, scaledHeight, d.value);
 
       el = document.createElement('a-box');
-      el.setAttribute('position', { x: x, y: scaledHeight / 2, z: z });
+      var finalHeight = scaledHeight / 2;
+      if (finalHeight > 0) {
+        finalHeight += 0.1;
+      }
+      else {
+        finalHeight -= 0.1;
+      }
+      el.setAttribute('position', { x: x, y: finalHeight, z: z });
       el.setAttribute('height', scaledHeight);
       el.setAttribute('width', xSize);
       el.setAttribute('depth', zSize);
-      el.setAttribute('material', 'color: ' + color + '; transparent: true; opacity: 0.7; metalness: 0.5; roughness: 0.9;');
+      //el.setAttribute('material', 'color: ' + color + '; transparent: true; opacity: 0.7; metalness: 0.5; roughness: 0.9; shader: flat;');
+      el.setAttribute('material', 'color: ' + color + '; transparent: true; opacity: 0.5; shader: flat;');
+
+      this.el.appendChild(el);
     }
-    else {
+    else { // sectors
       var box = document.createElement('a-box');
       box.setAttribute('position', { x: x, y: 0, z: z });
-      //box.setAttribute('wireframe', true);
       box.setAttribute('height', 0.001);
       box.setAttribute('width', xSize);
       box.setAttribute('depth', zSize);
-      box.setAttribute('material', 'color: white; transparent: true; opacity: 0.2; metalness: 0; roughness: 1;');
+      box.setAttribute('material', 'color: white; transparent: true; opacity: 0.2; metalness: 0.1; roughness: 1; depthTest: false;');
       this.el.appendChild(box);
 
 
-      el = document.createElement('a-text');
-      //el.setAttribute('material.wireframe', true);
-      el.setAttribute('position', { x: xInitial + x0, y: scaledHeight + 0.05, z: zInitial + y0 });
-      el.setAttribute('side', 'double');
-      el.setAttribute('height', zSize * 2);
-      //el.setAttribute('material', 'shader: flat;');
-      //el.setAttribute('rotation', '-90 0 0');
-      //el.setAttribute('scale', '2 2 2');
-      el.setAttribute('width', xSize * 2);
-      el.setAttribute('value', d.id);
-      //el.setAttribute('text', 'value: ' + d.id + ';');
+      // el = document.createElement('a-text');
+      // //el.setAttribute('material.wireframe', true);
+      // el.setAttribute('position', { x: xInitial + x0, y: scaledHeight, z: zInitial + y0 });
+      // el.setAttribute('side', 'double');
+      // //el.setAttribute('rotation', '-90 0 0');
+      // el.setAttribute('width', xSize * 2);
+      // el.setAttribute('height', zSize * 2);
+      // el.setAttribute('value', d.id);
+
+      var scaledHeight = 0.1;
+
+      this.el.appendChild(
+        createText({
+          x: xInitial + x0, 
+          y: scaledHeight + 0.01, 
+          z: zInitial + y0, 
+          width: xSize * 2, 
+          height: zSize * 2, 
+          text: d.id,
+          id: d.id + '-text-side-a',
+          rotation: '-90 0 0',
+          side: 'front'
+        })
+      );
+
+      this.el.appendChild(
+        createText({
+          x: xInitial + x0, 
+          y: -scaledHeight - 0.01, 
+          z: zInitial + y0, 
+          width: xSize * 2, 
+          height: zSize * 2, 
+          text: d.id,
+          id: d.id + '-text-side-b',
+          rotation: '90 0 0',
+          side: 'front'
+        })
+      );
     }
-
-    el.setAttribute('id', 'block-' + d.id);
-
-    this.el.appendChild(el);
   }
 });
+
+
+function createText(props) { // x, y, z, width, height, text, id, rotation, side
+  var el = document.createElement('a-text');
+  el.setAttribute('position', { x: props.x, y: props.y, z: props.z });
+  el.setAttribute('side', props.side);
+  el.setAttribute('baseline', 'bottom');
+  el.setAttribute('width', props.width);
+  el.setAttribute('height', props.height);
+  el.setAttribute('scale', '1.4 1.4 0');
+  el.setAttribute('value', props.text);
+  el.setAttribute('id', props.id);
+
+  if (props.rotation) {
+    el.setAttribute('rotation', props.rotation);
+  }
+
+  return el;
+}
