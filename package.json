@@ -14,6 +14,7 @@
     "ghpages": "ghpages"
   },
   "devDependencies": {
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "browserify": "^14.4.0",
     "budo": "^10.0.3",
     "ghpages": "0.0.10",
@@ -23,5 +24,11 @@
     "aframe",
     "webvr",
     "vr"
-  ]
+  ],
+  "dependencies": {
+    "aframe-orbit-controls-component-2": "^0.1.7",
+    "aframe-sun-sky": "^3.0.3",
+    "d3": "^4.9.1",
+    "d3-scale": "^1.0.6"
+  }
 }
