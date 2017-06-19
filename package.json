@@ -8,8 +8,10 @@
     "url": "https://github.com/fabiodr/fabiodr.github.io"
   },
   "scripts": {
-    "start": "budo index.js:bundle.js --live --verbose --port 3000 --open",
+    "start": "budo index.js:index-bundle.js --live --verbose --host localhost --port 3000 --open",
+    "start-cards": "budo index-cards.js:cards-bundle.js --live --verbose --port 3000 --open",
     "build": "browserify index.js | uglifyjs -cm > bundle.js",
+    "build-cards": "browserify index-cards.js | uglifyjs -cm > cards-bundle.js",
     "deploy": "ghpages",
     "ghpages": "ghpages"
   },
@@ -26,9 +28,7 @@
     "vr"
   ],
   "dependencies": {
-    "aframe-cubemap-component": "^0.1.1",
-    "aframe-orbit-controls-component-2": "^0.1.7",
-    "aframe-sun-sky": "^3.0.3",
+    "aframe-log-component": "^1.0.7",
     "d3": "^4.9.1",
     "d3-scale": "^1.0.6"
   }

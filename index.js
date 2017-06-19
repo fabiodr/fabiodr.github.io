@@ -10,4 +10,12 @@ require('./components/dragRotate.js');
 //require('aframe-sun-sky');
 //require('aframe-cubemap-component');
 
+//var extras = require('aframe-extras');
+// var extras = require('aframe-physics-system');
+// var extras = require('./lib/aframe-extras.js');
+// var extras = require('./lib/aframe-extras.controls.js');
+
+// Register a particular package, and its dependencies.
+//extras.controls.registerAll();
+
 console.log('budo init');

@@ -188,7 +188,7 @@ AFRAME.registerComponent('treemap-generator', {
   createBox: function (d) {
     if (d.depth == 0) return;
 
-    const el = document.createElement('a-box');
+    var el = document.createElement('a-box');
 
     let color;
 

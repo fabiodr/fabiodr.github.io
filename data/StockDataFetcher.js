@@ -7,7 +7,7 @@ window.stockDataFetcher = new function () {
 
   this.prepareStockData = function (data) {
     var processedData = [];
-    //const dateFormat = d3.time.format('%d/%m/%Y');
+    //var dateFormat = d3.time.format('%d/%m/%Y');
 
     processedData.push({ name: 'Sectors', superSector: '' });
 

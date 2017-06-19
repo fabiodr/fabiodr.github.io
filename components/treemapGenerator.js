@@ -27,7 +27,6 @@ var maxHeight = 3;
 var scaleMarketCap = d3.scaleLinear().range([0, maxHeight]);
 var scalePrice = d3.scaleLinear().range([0, maxHeight]);
 var scaleVolume = d3.scaleLinear().range([0, maxHeight]);
-//var scaleChange = d3.scaleLinear();
 var scaleChange = d3.scaleLinear().range([-maxHeight, 0, maxHeight]);
 
 var areaDimension = 'marketCap';
@@ -40,8 +39,6 @@ var heightDimensionOptions = {
 var heightDimension = heightDimensionOptions.change;
 
 var isChangeDimension = heightDimension.key === 'change';
-
-//var colorScale = d3.scaleOrdinal(d3.schemeCategory20c);
 
 function clampExtent(value, min, max) {
   if (value < min) {
@@ -66,7 +63,10 @@ AFRAME.registerComponent('treemap-generator', {
   },
 
   init: function () {
-    var that = this;
+    var self = this;
+
+    var cardInfo = this.cardInfo = this.el.sceneEl.querySelector('#cardInfo');
+    var cardTitle = this.cardTitle = this.el.sceneEl.querySelector('#cardTitle');
 
     console.log('init treemap-generator');
     stockDataFetcher.get(function (data) {
@@ -113,10 +113,8 @@ AFRAME.registerComponent('treemap-generator', {
         .each(function (d) {
           d.node = this;
 
-          that.createBox(d);
+          self.createBox(d);
         });
-
-      //console.log('root.descendants()', root.descendants());
     });
   },
   createBox: function (d) {
@@ -128,19 +126,11 @@ AFRAME.registerComponent('treemap-generator', {
     var y1 = d.y1 * adjustSize;
 
     if (d.depth == 0) {
-      // var middleAnchor = this.el.querySelector('#middleAnchor');
-      // //console.log('middlean', an);
-      // //var middleAnchor = document.createElement('a-box');
-      // middleAnchor.setAttribute('id', 'middleAnchor');
-      // middleAnchor.setAttribute('visible', 'false');
-      // middleAnchor.setAttribute('position', { x: x1 / 2, y: 0, z: y1 / 2 });
-      // this.el.appendChild(middleAnchor);
-
       return;
     }
 
-    var xInitial = -2.8;//-3;
-    var zInitial = -1.728;//-0.75;
+    var xInitial = -2.8;
+    var zInitial = -1.728;
 
     var xSize = (x1 - x0);
     var zSize = (y1 - y0);
@@ -175,8 +165,63 @@ AFRAME.registerComponent('treemap-generator', {
       el.setAttribute('height', scaledHeight);
       el.setAttribute('width', xSize);
       el.setAttribute('depth', zSize);
-      //el.setAttribute('material', 'color: ' + color + '; transparent: true; opacity: 0.7; metalness: 0.5; roughness: 0.9; shader: flat;');
-      el.setAttribute('material', 'color: ' + color + '; transparent: true; opacity: 0.5; shader: flat;');
+      el.setAttribute('material', 'color: ' + color + '; transparent: true; opacity: 0.7; shader: flat;');
+
+      var positionAnimation;
+      var opacityAnimation;
+
+      el.addEventListener('mouseenter', function () {
+        cardInfo.setAttribute('visible', 'true');
+        cardTitle.setAttribute('value', d.id);
+        var position = el.getAttribute('position');
+        var opacity = el.getAttribute('material');
+
+        // positionAnimation = new AFRAME.TWEEN.Tween(position)
+        //   .to({ x: position.x, y: position.y + 0.5, z: position.z }, 500)
+        //   .delay(0.2)
+        //   .easing(TWEEN.Easing.Quadratic.InOut)
+        //   .onUpdate(() => el.setAttribute('position', position))
+        //   .onComplete(() => {
+        //     console.log('anim finish');
+        //   })
+        //   .start();
+
+        // var opacityAnimation = new AFRAME.TWEEN.Tween(opacity)
+        //   .to({ opacity: 2 }, 500)
+        //   .delay(0.2)
+        //   .easing(TWEEN.Easing.Quadratic.InOut)
+        //   .onUpdate(function () {
+        //     el.setAttribute('material', 'opacity', opacity.opacity);
+        //   })
+        //   .start();
+      });
+
+      el.addEventListener('mouseleave', function () {
+        // cardTitle.setAttribute('value', d.id);
+        // var position = el.getAttribute('position');
+
+        // if (positionAnimation) {
+        //   positionAnimation.stop();
+        // }
+        // positionAnimation = new AFRAME.TWEEN.Tween(position)
+        //   .to({ x: position.x, y: position.y - 0.5, z: position.z }, 500)
+        //   .delay(0.2)
+        //   .easing(TWEEN.Easing.Quadratic.InOut)
+        //   .onUpdate(() => el.setAttribute('position', position))
+        //   .start();
+
+        // cardInfo.setAttribute('visible', 'false');
+      });
+
+      // this.flyTweenRotation = new TWEEN.Tween(rotation)
+      //     .to({ x:0, y: 0, z: 0 }, speed)
+      //     .delay(delay)
+      //     .easing(TWEEN.Easing.Quadratic.InOut)
+      //     .onUpdate(() => player.setAttribute('rotation', rotation))
+      //     .onComplete(() => {
+      //         this.isFirstTime = false;
+      //         document.dispatchEvent(new Event('INTRO_COMPLETED'));
+      //     });
 
       this.el.appendChild(el);
     }
@@ -186,28 +231,18 @@ AFRAME.registerComponent('treemap-generator', {
       box.setAttribute('height', 0.001);
       box.setAttribute('width', xSize);
       box.setAttribute('depth', zSize);
-      box.setAttribute('material', 'color: white; transparent: true; opacity: 0.2; metalness: 0.1; roughness: 1; depthTest: false;');
+      box.setAttribute('material', 'color: white; transparent: true; opacity: 0.5; metalness: 0.1; roughness: 1; depthTest: false;');
       this.el.appendChild(box);
-
-
-      // el = document.createElement('a-text');
-      // //el.setAttribute('material.wireframe', true);
-      // el.setAttribute('position', { x: xInitial + x0, y: scaledHeight, z: zInitial + y0 });
-      // el.setAttribute('side', 'double');
-      // //el.setAttribute('rotation', '-90 0 0');
-      // el.setAttribute('width', xSize * 2);
-      // el.setAttribute('height', zSize * 2);
-      // el.setAttribute('value', d.id);
 
       var scaledHeight = 0.1;
 
       this.el.appendChild(
         createText({
-          x: xInitial + x0, 
-          y: scaledHeight + 0.01, 
-          z: zInitial + y0, 
-          width: xSize * 2, 
-          height: zSize * 2, 
+          x: xInitial + x0,
+          y: scaledHeight + 0.01,
+          z: zInitial + y0,
+          width: xSize * 2,
+          height: zSize * 2,
           text: d.id,
           id: d.id + '-text-side-a',
           rotation: '-90 0 0',
@@ -217,11 +252,11 @@ AFRAME.registerComponent('treemap-generator', {
 
       this.el.appendChild(
         createText({
-          x: xInitial + x0, 
-          y: -scaledHeight - 0.01, 
-          z: zInitial + y0, 
-          width: xSize * 2, 
-          height: zSize * 2, 
+          x: xInitial + x0,
+          y: -scaledHeight - 0.01,
+          z: zInitial + y0,
+          width: xSize * 2,
+          height: zSize * 2,
           text: d.id,
           id: d.id + '-text-side-b',
           rotation: '90 0 0',
