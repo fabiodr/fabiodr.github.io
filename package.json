@@ -9,7 +9,8 @@
   },
   "scripts": {
     "start": "budo index.js:bundle.js --live --verbose --host localhost --port 3000 --open",
-    "start-cards": "budo index-cards.js:cards-bundle.js --live --verbose --port 3000 --open",
+    "start-cards": "budo index-cards.js:cards-bundle.js --live --verbose --host localhost --port 3000 --open",
+    "start-physics": "budo index-physics.js:physics-bundle.js --live --verbose --host localhost --port 3000 --open",
     "build": "browserify index.js | uglifyjs -cm > bundle.js",
     "build-cards": "browserify index-cards.js | uglifyjs -cm > cards-bundle.js",
     "deploy": "ghpages",
@@ -29,6 +30,7 @@
   ],
   "dependencies": {
     "aframe-log-component": "^1.0.7",
+    "aframe-physics-system": "^1.4.1",
     "d3": "^4.9.1",
     "d3-scale": "^1.0.6"
   }

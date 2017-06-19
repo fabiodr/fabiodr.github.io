@@ -1,6 +1,20 @@
 var d3 = require('d3');
 var d3scale = require('d3-scale');
 
+function round(num) {
+  return Math.round(num * 100) / 100;
+}
+
+function generateUID() {
+    // I generate the UID from two parts here 
+    // to ensure the random number provide enough bits.
+    var firstPart = (Math.random() * 46656) | 0;
+    var secondPart = (Math.random() * 46656) | 0;
+    firstPart = ("000" + firstPart.toString(36)).slice(-3);
+    secondPart = ("000" + secondPart.toString(36)).slice(-3);
+    return firstPart + secondPart;
+}
+
 function cascade(root, offset) {
   return root.eachAfter(function (d) {
     if (d.children) {
@@ -29,14 +43,14 @@ var scalePrice = d3.scaleLinear().range([0, maxHeight]);
 var scaleVolume = d3.scaleLinear().range([0, maxHeight]);
 var scaleChange = d3.scaleLinear().range([-maxHeight, 0, maxHeight]);
 
-var areaDimension = 'marketCap';
+var areaDimension = 'volume';
 var heightDimensionOptions = {
   marketCap: { key: 'marketCap', scale: scaleMarketCap },
   price: { key: 'price', scale: scalePrice },
   volume: { key: 'volume', scale: scaleVolume },
   change: { key: 'change', scale: scaleChange },
 };
-var heightDimension = heightDimensionOptions.change;
+var heightDimension = heightDimensionOptions.volume;
 
 var isChangeDimension = heightDimension.key === 'change';
 
@@ -54,6 +68,8 @@ function clampExtent(value, min, max) {
 
 var colorScale = d3.scaleSequential(d3.interpolateMagma)
   .domain([-4, 4]);
+
+var animatingBlock = false;
 
 AFRAME.registerComponent('treemap-generator', {
   schema: {
@@ -161,67 +177,71 @@ AFRAME.registerComponent('treemap-generator', {
       else {
         finalHeight -= 0.1;
       }
-      el.setAttribute('position', { x: x, y: finalHeight, z: z });
+
+      var position = { x: x, y: finalHeight, z: z };
+
+      el.setAttribute('position', position);
       el.setAttribute('height', scaledHeight);
       el.setAttribute('width', xSize);
       el.setAttribute('depth', zSize);
       el.setAttribute('material', 'color: ' + color + '; transparent: true; opacity: 0.7; shader: flat;');
 
-      var positionAnimation;
-      var opacityAnimation;
+      var elavation = 0.4;
+      var animYPosition = (height > 0) ? position.y + elavation : position.y - elavation;
+
+      var id = generateUID();
+      var animPositionEventName = 'anim-position' + id;
+
+      el.setAttribute('animation__position' + id,
+        {
+          property: 'position',
+          dur: 200,
+          to: round(position.x) + ' ' + round(animYPosition) + ' ' + round(position.z),
+          startEvents: animPositionEventName
+        });
+
+      el.setAttribute('animation__positionreverse' + id,
+        {
+          property: 'position',
+          dur: 200,
+          to: position.x + ' ' + position.y + ' ' + position.z,
+          startEvents: animPositionEventName + '-reverse' + ', newAnimationStarting'
+        });
+
+      el.addEventListener('animation__position' + id + '-complete', function (evt) {
+        console.log('animation__position' + id + '-complete');
+        animatingBlock = false;
+      });
+
+      el.addEventListener('animation__positionreverse' + id + '-complete', function (evt) {
+        console.log('animation__positionreverse' + id + '-complete');
+        animatingBlock = false;
+      });
 
       el.addEventListener('mouseenter', function () {
+        console.log('mouseenter', animatingBlock);
+        if(animatingBlock) return;
+
+        el.sceneEl.emit('newAnimationStarting');
+
+        animatingBlock = true;
+
         cardInfo.setAttribute('visible', 'true');
         cardTitle.setAttribute('value', d.id);
-        var position = el.getAttribute('position');
+
         var opacity = el.getAttribute('material');
 
-        // positionAnimation = new AFRAME.TWEEN.Tween(position)
-        //   .to({ x: position.x, y: position.y + 0.5, z: position.z }, 500)
-        //   .delay(0.2)
-        //   .easing(TWEEN.Easing.Quadratic.InOut)
-        //   .onUpdate(() => el.setAttribute('position', position))
-        //   .onComplete(() => {
-        //     console.log('anim finish');
-        //   })
-        //   .start();
+        el.emit(animPositionEventName);
 
-        // var opacityAnimation = new AFRAME.TWEEN.Tween(opacity)
-        //   .to({ opacity: 2 }, 500)
-        //   .delay(0.2)
-        //   .easing(TWEEN.Easing.Quadratic.InOut)
-        //   .onUpdate(function () {
-        //     el.setAttribute('material', 'opacity', opacity.opacity);
-        //   })
-        //   .start();
+        // console.log('property: position; dir: normal; dur: 200; to: '
+        //   + round(position.x) + ' ' + round(animYPosition) + ' ' + round(position.z));
       });
 
       el.addEventListener('mouseleave', function () {
-        // cardTitle.setAttribute('value', d.id);
-        // var position = el.getAttribute('position');
-
-        // if (positionAnimation) {
-        //   positionAnimation.stop();
-        // }
-        // positionAnimation = new AFRAME.TWEEN.Tween(position)
-        //   .to({ x: position.x, y: position.y - 0.5, z: position.z }, 500)
-        //   .delay(0.2)
-        //   .easing(TWEEN.Easing.Quadratic.InOut)
-        //   .onUpdate(() => el.setAttribute('position', position))
-        //   .start();
-
-        // cardInfo.setAttribute('visible', 'false');
+        if(animatingBlock) return;
+        console.log('mouseleave', el.getAttribute('animation__position'));
+        el.emit(animPositionEventName + '-reverse');
       });
-
-      // this.flyTweenRotation = new TWEEN.Tween(rotation)
-      //     .to({ x:0, y: 0, z: 0 }, speed)
-      //     .delay(delay)
-      //     .easing(TWEEN.Easing.Quadratic.InOut)
-      //     .onUpdate(() => player.setAttribute('rotation', rotation))
-      //     .onComplete(() => {
-      //         this.isFirstTime = false;
-      //         document.dispatchEvent(new Event('INTRO_COMPLETED'));
-      //     });
 
       this.el.appendChild(el);
     }
@@ -231,7 +251,7 @@ AFRAME.registerComponent('treemap-generator', {
       box.setAttribute('height', 0.001);
       box.setAttribute('width', xSize);
       box.setAttribute('depth', zSize);
-      box.setAttribute('material', 'color: white; transparent: true; opacity: 0.5; metalness: 0.1; roughness: 1; depthTest: false;');
+      box.setAttribute('material', 'color: white; transparent: true; opacity: 0.5; depthTest: false;shader: flat; ');
       this.el.appendChild(box);
 
       var scaledHeight = 0.1;

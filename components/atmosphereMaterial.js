@@ -78,4 +78,4 @@ AFRAME.registerComponent('atmosphereMaterial', {
   //   this.material.uniforms.time.value = t / 1000;
   // }
 
-})
+});

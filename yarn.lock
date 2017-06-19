@@ -21,6 +21,13 @@ aframe-log-component@^1.0.7:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/aframe-log-component/-/aframe-log-component-1.0.7.tgz#1bc8299f98a1e1989ee6d8eb2835650b7accaacc"
 
+aframe-physics-system@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/aframe-physics-system/-/aframe-physics-system-1.4.1.tgz#90814c9937bd24ba6694a8a054992b8724415ad2"
+  dependencies:
+    cannon "github:donmccurdy/cannon.js#v0.6.2-dev1"
+    three-to-cannon "^1.1.1"
+
 ajv@^4.9.1:
   version "4.11.8"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-4.11.8.tgz#82ffb02b29e662ae53bdc20af15947706739c536"
@@ -498,6 +505,10 @@ camelcase-keys@^2.0.0:
 camelcase@^2.0.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-2.1.1.tgz#7c1d16d679a1bbe59ca02cacecfb011e201f5a1f"
+
+"cannon@github:donmccurdy/cannon.js#v0.6.2-dev1":
+  version "0.6.2"
+  resolved "https://codeload.github.com/donmccurdy/cannon.js/tar.gz/022e8ba53fa83abf0ad8a0e4fd08623123838a17"
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -2592,6 +2603,10 @@ term-color@^1.0.1:
   dependencies:
     ansi-styles "2.0.1"
     supports-color "1.3.1"
+
+three-to-cannon@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/three-to-cannon/-/three-to-cannon-1.1.1.tgz#51bc612cb2fd7eef65a9998ae112726122e63cd5"
 
 through2@^2.0.0:
   version "2.0.3"

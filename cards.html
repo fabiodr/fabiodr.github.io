@@ -1,36 +1,54 @@
 <html>
-  <head>
-    <title>MZiQ VR Cards</title>
-    <script src="cards-bundle.js"></script>
-  </head>
-  <body>
-    <a-scene main>
-      <a-assets>
-        <img crossorigin id="groundTexture" src="/assets/image/floor.jpg">
-        <img crossorigin id="skyTexture" src="/assets/image/night-sky.jpg">
-      </a-assets>
 
-      <!--<a-log></a-log>-->
+<head>
+  <title>MZiQ VR Cards</title>
+  <script src="cards-bundle.js"></script>
+  <script src="/lib/aframe-extras.min.js"></script>
+  <script src="/lib/aframe-animation-component.min.js"></script>
+</head>
 
-      <a-entity detect-clap="debounce: true; trigger: 0.95;"></a-entity>
+<body>
+  <a-scene main stats physics="debug: true; friction: 0.8; restitution: 0.1;">
+    <a-assets>
+      <img crossorigin id="groundTexture" src="/assets/image/floor.jpg">
+      <img crossorigin id="skyTexture" src="/assets/image/night-sky.jpg">
+    </a-assets>
 
-      <a-entity log="channel: colorz" 
-        text="height: 1; width: 2;"
-        position="0 1.6 0" 
-        geometry="primitive: plane; height: 1; width: 2" 
-        material="color: #222;"></a-entity>
+    <a-light type="ambient" color="#445451"></a-light>
+    <a-light type="point" intensity="2" position="2 4 4"></a-light>
 
-      <!--<a-entity log="channel: colorz" geometry="primitive: plane; height: 5" material="color: #222; shader: flat"></a-entity>-->
+    <a-sky height="2048" radius="30" src="#skyTexture" theta-length="90" width="2048"></a-sky>
 
-      <!--<a-entity layout="type: line; margin: 1.2" position="-2 0 -3">
-      </a-entity>-->
+    <a-plane static-body src="#groundTexture" rotation="-90 0 0" height="100" width="100"></a-plane>
 
-        <!--<a-entity log="channel: colorz" geometry="primitive: plane; height: 5" material="color: #222; shader: flat"></a-entity>-->
+    <a-entity position="0 .6 4">
+      <!--<a-entity camera id="camera" universal-controls="rotationControls: hmd, gamepad;" mouse-controls="pointerlockEnabled: false">-->
+      <a-entity camera id="camera" universal-controls mouse-controls="pointerlockEnabled: false">
+        <a-entity cursor="downEvents: touchstart; upEvents: touchend;" raycaster="far: 100; objects: .intersectable;" geometry="primitive: circle; radius: 0.005;"
+          material="color: #FFF;" position="0 0 -0.75"></a-entity>
 
-      <a-plane src="#groundTexture" rotation="-90 0 0" height="100" width="100"></a-plane>
-      <a-light type="ambient" color="#445451"></a-light>
-      <a-light type="point" intensity="2" position="2 4 4"></a-light>
-      <a-sky height="2048" radius="30" src="#skyTexture" theta-length="90" width="2048"></a-sky>
-    </a-scene>
-  </body>
+        <a-light light="type: point; color: #fff; intensity: 0.8;" position="0 0 0"></a-light>
+      </a-entity>
+    </a-entity>
+
+    <!--<a-entity detect-clap="debounce: true; trigger: 0.60;"></a-entity>-->
+
+    <!--<a-entity log text="height: 1; width: 2;" position="0 1.6 0" geometry="primitive: plane; height: 1; width: 2" material="color: #222;"></a-entity>-->
+
+    <a-sphere dynamic-body id="gravityAnchor" class="intersectable" radius="1.2" force-pushable color="#39BB82" position="-9 2 -3"></a-sphere>
+
+    <a-sphere dynamic-body class="intersectable" force-pushable id="ball1" color="#39BB82" position="-2 2 -3"></a-sphere>
+
+    <a-cylinder dynamic-body="angularDamping: 0.99;" class="intersectable" point-gravity force-pushable debug-bb color="#FFFF00"
+      rotation="90 0 0" position="1 2 -3"></a-cylinder>
+
+    <a-box id="box1" class="intersectable" follow="target: #gravityAnchor" force-pushable debug-bb color="#FF0000" position="4 2 -3"></a-box>
+
+    <a-box id="boxGreen" animation__scale="property: scale; dir: alternate; dur: 200;
+                           easing: easeInSine; loop: true; to: 1.2 1 1.2" class="intersectable" dynamic-body="angularDamping: 0.95;"
+      cancel-gravity force-pushable debug-bb color="#00FF00" position="8 5 -3"></a-box>
+
+  </a-scene>
+</body>
+
 </html>
