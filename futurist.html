@@ -9,12 +9,27 @@
 </head>
 
 <body>
-  <a-scene>
+  <a-scene stats>
     <a-assets>
       <a-asset-item id="engine" src="/assets/models/engine.dae"></a-asset-item>
       <a-mixin id="image" geometry="height: 2; width: 2"></a-mixin>
       <audio id="blip1" src="/assets/sound/plim.wav"></audio>
       <audio id="blip2" src="/assets/sound/plup.wav"></audio>
+      <img id="glow1" src="/assets/image/ui/glow1.png">
+      <img id="ring1" src="/assets/image/ui/ring1.png">
+      <img id="ring2" src="/assets/image/ui/ring2.png">
+      <img id="ring3" src="/assets/image/ui/ring3.png">
+      <img id="ring4" src="/assets/image/ui/ring4.png">
+      <img id="ring5" src="/assets/image/ui/ring5.png">
+      <img id="schematic1" src="/assets/image/ui/schematic1.png">
+      <img id="schematic2" src="/assets/image/ui/schematic2.png">
+      <img id="schematic3" src="/assets/image/ui/schematic3.png">
+      <img id="schematic4" src="/assets/image/ui/schematic4.png">
+      <img id="schematic5" src="/assets/image/ui/schematic5.png">
+      <img id="text1" src="/assets/image/ui/text1.png">
+      <img id="text2" src="/assets/image/ui/text2.png">
+      <img id="text3" src="/assets/image/ui/text3.png">
+      <img id="text4" src="/assets/image/ui/text4.png">
     </a-assets>
 
     <!--<a-entity position="1.75 0 1.2" rotation="0 28 0">
@@ -22,10 +37,9 @@
     </a-entity>-->
 
     <a-entity position="1.75 0 1.2" rotation="0 28 0">
-      
       <!--rotationControls: hmd, gamepad; -->
       <!--look-controls="enabled:false"-->
-      <a-entity camera="user-height: 0; near: 0.1" position="3.076 0 -0.854" rotation="-9.969 42.055 0" id="camera" universal-controls="rotationControls: hmd, gamepad;" mouse-controls="pointerlockEnabled: false">
+      <a-entity camera="user-height: 0; near: 0.1" id="camera" universal-controls="rotationControls: hmd, gamepad;" mouse-controls="pointerlockEnabled: false">
         <!--showLine: true;-->
         <a-entity cursor="downEvents: touchstart; upEvents: touchend;" raycaster="far: 100; objects: .intersectable;" geometry="primitive: circle; radius: 0.005;"
           material="color: #FFF;" position="0 0 -0.75"></a-entity>
@@ -39,14 +53,14 @@
       </a-entity>
     </a-entity>
 
-    <a-entity position="0 -0.5 -3">
+    <a-entity position="0 0 -3">
       <a-collada-model src="#engine" rotation="90 0 0" scale="18 18 18"></a-collada-model>
     </a-entity>
 
     <a-entity gearvr-controls></a-entity>
 
 
-    <a-entity id="treemapContainer" class="intersectable" treemap-generator drag-rotate="speed: 8;" position="0 -0.5 -3" rotation="46.811 106.570 18.507"></a-entity>
+    <a-entity id="treemapContainer" class="intersectable" treemap-generator drag-rotate="speed: 8;" position="0 0 -5.25"></a-entity>
 
 
     <!-- Lights. -->

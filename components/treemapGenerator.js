@@ -43,14 +43,14 @@ var scalePrice = d3.scaleLinear().range([0, maxHeight]);
 var scaleVolume = d3.scaleLinear().range([0, maxHeight]);
 var scaleChange = d3.scaleLinear().range([-maxHeight, 0, maxHeight]);
 
-var areaDimension = 'volume';
+var areaDimension = 'marketCap';
 var heightDimensionOptions = {
   marketCap: { key: 'marketCap', scale: scaleMarketCap },
   price: { key: 'price', scale: scalePrice },
   volume: { key: 'volume', scale: scaleVolume },
   change: { key: 'change', scale: scaleChange },
 };
-var heightDimension = heightDimensionOptions.volume;
+var heightDimension = heightDimensionOptions.change;
 
 var isChangeDimension = heightDimension.key === 'change';
 
