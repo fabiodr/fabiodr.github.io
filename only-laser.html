@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>MZiQ VR</title>
+  <script src="bundle.js"></script>
+  <script src="/lib/aframe-extras.min.js"></script>
+</head>
+
+<body>
+  <a-scene>
+    <a-assets>
+      <a-asset-item id="engine"
+                    src="/assets/models/engine.dae"></a-asset-item>
+      <a-mixin id="image"
+               geometry="height: 2; width: 2"></a-mixin>
+      <audio id="blip1"
+             src="/assets/sound/plim.wav"></audio>
+      <audio id="blip2"
+             src="/assets/sound/plup.wav"></audio>
+    </a-assets>
+
+    <!--<a-entity position="1.75 0 1.2" rotation="0 28 0">
+      <a-camera near="0.1" user-height="0"></a-camera>
+    </a-entity>-->
+
+    <a-entity position="1.75 0 1.2"
+              rotation="0 28 0">
+
+      <!--rotationControls: hmd, gamepad; -->
+      <!--look-controls="enabled:false"-->
+      <a-entity camera="user-height: 0; near: 0.1"
+                position="3.076 0 -0.854"
+                rotation="-9.969 42.055 0"
+                id="camera"
+                universal-controls="rotationControls: hmd, gamepad, mouse; movementControls: keyboard"
+                mouse-controls="pointerlockEnabled: false">
+        <!--showLine: true;-->
+        <a-entity cursor="downEvents: touchstart; upEvents: touchend;"
+                  raycaster="far: 100; objects: .intersectable;"
+                  geometry="primitive: circle; radius: 0.005;"
+                  material="color: #FFF;"
+                  position="0 0 -0.75">
+  <a-animation begin="click" easing="ease-in" attribute="scale"
+               fill="backwards" from="0.1 0.1 0.1" to="1 1 1"></a-animation>
+  <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale"
+               fill="forwards" from="1 1 1" to="0.1 0.1 0.1"></a-animation>
+                  </a-entity>
+
+        <a-entity id="cardInfo"
+                  geometry="primitive:plane;height:0.2;width:0.4"
+                  material="shader:flat;color:#FFF"
+                  position="1 0 -1">
+          <a-text id="cardTitle"
+                  color="#4B5154"
+                  width="4"
+                  position="0 0.312 0.01"
+                  value="Petrobras"
+                  align="center"
+                  baseline="top"
+                  anchor="align"></a-text>
+          <a-plane material="shader:flat"
+                   width="1.6"
+                   height="0.01"
+                   position="0 0.085 0.01"
+                   color="#697982"
+                   opacity="0.3"></a-plane>
+        </a-entity>
+
+        <!--<a-light light="type: point; color: #fff; intensity: 0.6;" position="0 0 0"></a-light>-->
+      </a-entity>
+    </a-entity>
+
+    <a-entity position="0 -0.5 -3">
+      <a-collada-model src="#engine"
+                       rotation="90 0 0"
+                       scale="18 18 18"></a-collada-model>
+    </a-entity>
+
+    <a-entity gearvr-controls></a-entity>
+
+
+    <a-entity id="treemapContainer"
+              class="intersectable"
+              treemap-generator
+              drag-rotate="speed: 8;"
+              position="0 -0.5 -3"
+              rotation="46.811 106.570 18.507"></a-entity>
+
+
+    <!-- Lights. -->
+    <a-light type="point"
+             color="#94c6ff"
+             distance="15"
+             position="0 0 -12">
+      <a-animation attribute="intensity"
+                   from="0"
+                   to="2"
+                   delay="750"
+                   dur="500"
+                   fill="both"></a-animation>
+    </a-light>
+    <a-light type="point"
+             color="#94c6ff"
+             distance="17"
+             position="0 0 -6">
+      <a-animation attribute="intensity"
+                   from="0"
+                   to="1"
+                   delay="500"
+                   dur="500"
+                   fill="both"></a-animation>
+    </a-light>
+    <a-light type="ambient"
+             color="#4f6487"></a-light>
+
+    <!-- Sounds. -->
+    <a-entity sound="autoplay: true; src: #blip1;"></a-entity>
+    <a-entity sound="autoplay: true; src: #blip2;"></a-entity>
+  </a-scene>
+</body>
+
+</html>

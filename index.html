@@ -5,7 +5,8 @@
   <meta charset="utf-8">
   <title>MZiQ VR</title>
   <script src="bundle.js"></script>
-  <script src="/lib/aframe-extras.min.js"></script>
+  <!--<script src="/lib/aframe-extras.min.js"></script>-->
+  <!--<script src="https://raw.githubusercontent.com/aframevr/aframe/master/dist/aframe-master.js"></script>-->
 </head>
 
 <body>
@@ -21,33 +22,67 @@
       <a-camera near="0.1" user-height="0"></a-camera>
     </a-entity>-->
 
+    <a-entity laser-controls></a-entity>
+
     <a-entity position="1.75 0 1.2" rotation="0 28 0">
-      
+
+      <!--universal-controls="rotationControls: hmd, gamepad, mouse; movementControls: keyboard"
+                mouse-controls="pointerlockEnabled: false"-->
       <!--rotationControls: hmd, gamepad; -->
       <!--look-controls="enabled:false"-->
-      <a-entity camera="user-height: 0; near: 0.1" position="3.076 0 -0.854" rotation="-9.969 42.055 0" id="camera" universal-controls="rotationControls: hmd, gamepad;" mouse-controls="pointerlockEnabled: false">
+      <a-entity camera="user-height: 0; near: 0.1" look-controls wasd-controls position="3.076 0 -0.854"
+        rotation="-9.969 42.055 0" id="camera">
         <!--showLine: true;-->
-        <a-entity cursor="downEvents: touchstart; upEvents: touchend;" raycaster="far: 100; objects: .intersectable;" geometry="primitive: circle; radius: 0.005;"
+        <a-entity cursor debug-raycaster raycaster="far: 100; objects: .intersectable;" geometry="primitive: circle; radius: 0.005;"
           material="color: #FFF;" position="0 0 -0.75"></a-entity>
 
-        <!--<a-entity id="cardInfo" geometry="primitive:plane;height:0.2;width:0.4" material="shader:flat;color:#FFF" position="1 0 -1">
-          <a-text id="cardTitle" color="#4B5154" width="4" position="0 0.312 0.01" text="value:Petrobras;align:center;baseline:top;anchor:align;width:4;color:#4B5154"></a-text>
-          <a-plane material="shader:flat" width="1.6" height="0.01" position="0 0.085 0.01" color="#697982" opacity="0.3"></a-plane>
-        </a-entity>-->
+        <a-entity id="cardInfo" geometry="width:0.44;height:0.35;primitive:plane" material="shader:flat;color:#FFF"
+          position="0.9 0.002 -0.8">
+          <!--<a-entity id="cardTitle" color="#4B5154" position="0 0.11 0" align="center"
+            baseline="top" anchor="align" text="anchor:align;width:1;color:#4B5154;value:Bradesco;align:center;baseline:top"></a-entity>-->
+          <a-text id="cardTitle" color="#4B5154" position="0 0.13 0" align="center" width="1"
+            baseline="top" anchor="align" wrapCount="70" value="Title" color="#4B5154"></a-text>
+
+          <a-text id="cardChangeLabel" color="#4B5154" position="-0.12 0.049 0" align="center" width="0.5"
+            baseline="top" anchor="align" wrapCount="70" value="Change" color="#4B5154"></a-text>
+          <a-text id="cardChange" color="#4B5154" position="-0.12 0.001 0" align="center" width="1"
+            baseline="top" anchor="align" wrapCount="70" value="Change" color="#4B5154"></a-text>
+
+          <a-text id="cardMarketCapLabel" color="#4B5154" position="0.07 0.049 0" align="center" width="0.5"
+            baseline="top" anchor="align" wrapCount="70" value="MarketCap" color="#4B5154"></a-text>
+          <a-text id="cardMarketCap" color="#4B5154" position="0.07 0.001 0" align="center" width="1"
+            baseline="top" anchor="align" wrapCount="70" value="MarketCap" color="#4B5154"></a-text>
+
+          <a-text id="cardPriceLabel" color="#4B5154" position="0.07 -0.066 0" align="center" width="0.5"
+            baseline="top" anchor="align" wrapCount="70" value="Price" color="#4B5154"></a-text>
+          <a-text id="cardPrice" color="#4B5154" position="0.07 -0.121 0" align="center" width="1"
+            baseline="top" anchor="align" wrapCount="70" value="Price" color="#4B5154"></a-text>
+
+          <a-text id="cardVolumeLabel" color="#4B5154" position="-0.11 -0.066 0" align="center" width="0.5"
+            baseline="top" anchor="align" wrapCount="70" value="Volume" color="#4B5154"></a-text>
+          <a-text id="cardVolume" color="#4B5154" position="-0.11 -0.121 0" align="center" width="1"
+            baseline="top" anchor="align" wrapCount="70" value="Volume" color="#4B5154"></a-text>
+
+
+          <a-plane material="shader:flat" width="0.3" height="0.005" position="0 0.065 0.01"
+            color="#697982" opacity="0.3" geometry="height:0.003;primitive:plane;width:0.3"></a-plane>
+        </a-entity>
+
+
 
         <!--<a-light light="type: point; color: #fff; intensity: 0.6;" position="0 0 0"></a-light>-->
       </a-entity>
+
+    </a-entity>
+
+    <a-entity id="treeParent">
+    <a-entity id="treemapContainer" class="intersectable" treemap-generator drag-rotate="speed: 8;"
+      position="0 -5.5 -3" rotation="46.811 106.570 18.507"></a-entity>
     </a-entity>
 
     <a-entity position="0 -0.5 -3">
       <a-collada-model src="#engine" rotation="90 0 0" scale="18 18 18"></a-collada-model>
     </a-entity>
-
-    <a-entity gearvr-controls></a-entity>
-
-
-    <a-entity id="treemapContainer" class="intersectable" treemap-generator drag-rotate="speed: 8;" position="0 -0.5 -3" rotation="46.811 106.570 18.507"></a-entity>
-
 
     <!-- Lights. -->
     <a-light type="point" color="#94c6ff" distance="15" position="0 0 -12">

@@ -29,9 +29,11 @@
     "vr"
   ],
   "dependencies": {
+    "aframe-controller-cursor-component": "^0.2.7",
     "aframe-log-component": "^1.0.7",
     "aframe-physics-system": "^1.4.1",
+    "animejs": "^2.0.2",
     "d3": "^4.9.1",
-    "d3-scale": "^1.0.6"
+    "numeral": "^2.0.6"
   }
 }
