@@ -11,6 +11,7 @@
     "start": "budo index.js:bundle.js --live --verbose --host localhost --port 3000 --open",
     "start-cards": "budo index-cards.js:cards-bundle.js --live --verbose --host localhost --port 3000 --open",
     "start-physics": "budo index-physics.js:physics-bundle.js --live --verbose --host localhost --port 3000 --open",
+    "start-laser": "budo index-laser.js:laser-bundle.js --live --verbose --host localhost --port 3000 --open",
     "build": "browserify index.js | uglifyjs -cm > bundle.js",
     "build-cards": "browserify index-cards.js | uglifyjs -cm > cards-bundle.js",
     "deploy": "ghpages",

@@ -137,18 +137,18 @@ AFRAME.registerComponent('treemap-generator', {
           self.createBox(d);
         });
 
-      var pos = self.el.getAttribute('position');
-      console.log(pos, pos.x + ' ' + (pos.y - 0.5) + ' ' + pos.z);
-      self.el.setAttribute('anime__position',
-        {
-          property: 'position',
-          dur: 2000,
-          dir: 'normal',
-          //from: pos.x + ' ' + (pos.y - 5) + ' ' + pos.z,
-          to: pos.x + ' ' + (pos.y + 5) + ' ' + pos.z,
-          easing: 'easeInOutQuart'
-          //delay: 7000
-        });
+      // var pos = self.el.getAttribute('position');
+      // console.log(pos, pos.x + ' ' + (pos.y - 0.5) + ' ' + pos.z);
+      // self.el.setAttribute('anime__position',
+      //   {
+      //     property: 'position',
+      //     dur: 2000,
+      //     dir: 'normal',
+      //     //from: pos.x + ' ' + (pos.y - 5) + ' ' + pos.z,
+      //     to: pos.x + ' ' + (pos.y + 5) + ' ' + pos.z,
+      //     easing: 'easeInOutQuart'
+      //     //delay: 7000
+      //   });
 
 
       //         translateX: {

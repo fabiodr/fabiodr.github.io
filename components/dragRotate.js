@@ -19,7 +19,10 @@ AFRAME.registerComponent('drag-rotate', {
   onElementMouseDown: function (event) {
     this.ifMouseDown = true;
     console.log('element mouse down');
-    document.getElementById('camera').setAttribute('look-controls', 'enabled: false;');
+    // var cam = document.getElementById('camera');
+    // if(cam) {
+    //   document.getElementById('camera').setAttribute('look-controls', 'enabled: false;');
+    // }
   },
   onDocumentMouseDown: function (event) {
     console.log('onDocumentMouseDown');
@@ -28,7 +31,10 @@ AFRAME.registerComponent('drag-rotate', {
   },
   onDocumentMouseUp: function () {
     this.ifMouseDown = false;
-    document.getElementById('camera').setAttribute('look-controls', 'enabled: true;');
+    // var cam = document.getElementById('camera');
+    // if(cam) {
+    //   document.getElementById('camera').setAttribute('look-controls', 'enabled: true;');
+    // }
   },
   onDocumentMouseMove: function (event) {
     //console.log('onDocumentMouseMove');

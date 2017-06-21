@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>MZiQ VR</title>
+  <script src="laser-bundle.js"></script>
+  <!--<script src="/lib/aframe-extras.min.js"></script>-->
+  <!--<script src="https://raw.githubusercontent.com/aframevr/aframe/master/dist/aframe-master.js"></script>-->
+</head>
+
+<body>
+  <a-scene>
+    <a-assets>
+      <a-asset-item id="engine" src="/assets/models/engine.dae"></a-asset-item>
+      <audio id="blip1" src="/assets/sound/plim.wav"></audio>
+      <audio id="blip2" src="/assets/sound/plup.wav"></audio>
+    </a-assets>
+    <a-entity id="leftHand" laser-controls="hand: left"></a-entity>
+    <a-entity id="rightHand" laser-controls="hand: right"
+      line="color: #118A7E"></a-entity>
+
+    <a-entity position="0 1.5 0" rotation="0 0 0">
+
+      <!--universal-controls="rotationControls: hmd, gamepad, mouse; movementControls: keyboard"
+                mouse-controls="pointerlockEnabled: false"-->
+      <!--rotationControls: hmd, gamepad; -->
+      <!--look-controls="enabled:false"-->
+      <!--<a-entity position="3.076 0 -0.854" rotation="-9.969 42.055 0"
+        id="camera">-->
+        <!--showLine: true;-->
+        <a-entity geometry="primitive: circle; radius: 0.005;" material="color: #FFF;" position="0 0 -0.75"></a-entity>
+
+        <a-entity id="cardInfo" geometry="width:0.44;height:0.35;primitive:plane" material="shader:flat;color:#FFF"
+          position="0.9 0.002 -0.8">
+          <!--<a-entity id="cardTitle" color="#4B5154" position="0 0.11 0" align="center"
+            baseline="top" anchor="align" text="anchor:align;width:1;color:#4B5154;value:Bradesco;align:center;baseline:top"></a-entity>-->
+          <a-text id="cardTitle" color="#4B5154" position="0 0.13 0" align="center" width="1"
+            baseline="top" anchor="align" wrapCount="70" value="Title" color="#4B5154"></a-text>
+
+          <a-text id="cardChangeLabel" color="#4B5154" position="-0.12 0.049 0" align="center"
+            width="0.5" baseline="top" anchor="align" wrapCount="70" value="Change"
+            color="#4B5154"></a-text>
+          <a-text id="cardChange" color="#4B5154" position="-0.12 0.001 0" align="center" width="1"
+            baseline="top" anchor="align" wrapCount="70" value="Change" color="#4B5154"></a-text>
+
+          <a-text id="cardMarketCapLabel" color="#4B5154" position="0.07 0.049 0" align="center"
+            width="0.5" baseline="top" anchor="align" wrapCount="70" value="MarketCap"
+            color="#4B5154"></a-text>
+          <a-text id="cardMarketCap" color="#4B5154" position="0.07 0.001 0" align="center"
+            width="1" baseline="top" anchor="align" wrapCount="70" value="MarketCap"
+            color="#4B5154"></a-text>
+
+          <a-text id="cardPriceLabel" color="#4B5154" position="0.07 -0.066 0" align="center"
+            width="0.5" baseline="top" anchor="align" wrapCount="70" value="Price"
+            color="#4B5154"></a-text>
+          <a-text id="cardPrice" color="#4B5154" position="0.07 -0.121 0" align="center" width="1"
+            baseline="top" anchor="align" wrapCount="70" value="Price" color="#4B5154"></a-text>
+
+          <a-text id="cardVolumeLabel" color="#4B5154" position="-0.11 -0.066 0" align="center"
+            width="0.5" baseline="top" anchor="align" wrapCount="70" value="Volume"
+            color="#4B5154"></a-text>
+          <a-text id="cardVolume" color="#4B5154" position="-0.11 -0.121 0" align="center"
+            width="1" baseline="top" anchor="align" wrapCount="70" value="Volume" color="#4B5154"></a-text>
+
+
+          <a-plane material="shader:flat" width="0.3" height="0.005" position="0 0.065 0.01"
+            color="#697982" opacity="0.3" geometry="height:0.003;primitive:plane;width:0.3"></a-plane>
+        </a-entity>
+
+
+
+        <!--<a-light light="type: point; color: #fff; intensity: 0.6;" position="0 0 0"></a-light>-->
+      <!--</a-entity>-->
+
+    </a-entity>
+    <a-entity id="treemapContainer" class="intersectable" treemap-generator drag-rotate="speed: 8;"
+      position="0 0 -3" rotation="20 0 0"></a-entity>
+
+    <a-entity position="0 -0.5 -3">
+      <a-collada-model src="#engine" rotation="90 0 0" scale="18 18 18"></a-collada-model>
+    </a-entity>
+
+    <!-- Lights. -->
+    <a-light type="point" color="#94c6ff" distance="15" position="0 0 -12">
+      <a-animation attribute="intensity" from="0" to="2" delay="750" dur="500" fill="both"></a-animation>
+    </a-light>
+    <a-light type="point" color="#94c6ff" distance="17" position="0 0 -6">
+      <a-animation attribute="intensity" from="0" to="1" delay="500" dur="500" fill="both"></a-animation>
+    </a-light>
+    <a-light type="ambient" color="#4f6487"></a-light>
+
+    <!-- Sounds. -->
+    <a-entity sound="autoplay: true; src: #blip1;"></a-entity>
+    <a-entity sound="autoplay: true; src: #blip2;"></a-entity>
+  </a-scene>
+</body>
+
+</html>
