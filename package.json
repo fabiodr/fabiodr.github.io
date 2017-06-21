@@ -14,6 +14,7 @@
     "start-laser": "budo index-laser.js:laser-bundle.js --live --verbose --host localhost --port 3000 --open",
     "build": "browserify index.js | uglifyjs -cm > bundle.js",
     "build-cards": "browserify index-cards.js | uglifyjs -cm > cards-bundle.js",
+    "build-laser": "browserify index-laser.js | uglifyjs -cm > laser-bundle.js",
     "deploy": "ghpages",
     "ghpages": "ghpages"
   },
