@@ -1,0 +1,386 @@
+
+   <script>
+
+
+
+      var settings = {
+
+         // 0 tied to cam, 1 tied to world
+         target:   1,
+
+         // three is my guess-best, others can be found in the docs or the switch below
+         transformation: 3,
+
+         // true is on, false is off
+         building: false,
+
+         // true is on, false is off
+         pillars:  true,
+
+         // true is on, false is off
+         fog:  true
+
+      }
+
+
+
+      var scene = document.querySelector('a-scene');
+      scene.addEventListener('loaded', function(){
+         // Initially set the camera object
+         setCameraAttributes();
+
+         // Turns the active target on
+         toggleTarget(activeTarget);
+
+         // Setup building
+         toggleBuilding(building.state);
+
+         // Setup pillars
+         togglePillars(pillars.state);
+
+         // Setup observer
+         setObserver();
+      });
+
+      var fog = {
+         state: settings.fog,
+         density: scene.getAttribute('fog').density
+      }
+      console.log(fog.density);
+
+      // Create a camera object
+      var camera = {
+         el: document.querySelector('#human-camera'),
+         x: 0,
+         y: 0,
+         z: 0,
+         a: 0,
+         b: 0,
+         c: 0
+      }
+
+      // Set target object
+      var targets = document.getElementsByClassName('target');
+      var newPositionCompInit = undefined;
+
+      //Set defaults
+      var defaultTarget = targets[settings.target];
+      var defaultTransformation = settings.transformation;
+      var defaultPositions = [];
+          defaultPositions[0] = targets[0].getAttribute('position');
+          defaultPositions[1] = targets[1].getAttribute('position');
+
+      var defaultRotations = [];
+          defaultRotations[0] = targets[0].getAttribute('rotation');
+          defaultRotations[1] = targets[1].getAttribute('rotation');
+
+      var building = {
+         el: document.querySelector('#building'),
+         state: settings.building
+      }
+
+      var pillars = {
+         el: document.querySelector('#pillars'),
+         state: settings.pillars
+      }
+
+      // Set active target
+      var activeTarget = defaultTarget;
+
+      // KeyListener
+      var keyListener = new window.keypress.Listener();
+      keyListener.simple_combo('c', function(){
+         setCameraAttributes();
+         console.log(camera);
+         console.log(activeTarget);
+
+      });
+      keyListener.simple_combo('t', function(){
+         toggleTarget();
+      });
+      keyListener.simple_combo('b', function(){
+         toggleBuilding();
+      });
+      keyListener.simple_combo('p', function(){
+         togglePillars();
+      });
+      keyListener.simple_combo('f', function(){
+         toggleFog();
+      });
+      keyListener.simple_combo('0', function(){
+         setObserver(defaultTransformation);
+      });
+      keyListener.simple_combo('1', function(e){
+         setObserver(1);
+      });
+      keyListener.simple_combo('2', function(){
+         setObserver(2);
+      });
+      keyListener.simple_combo('3', function(){
+         setObserver(3);
+      });
+      keyListener.simple_combo('4', function(){
+         setObserver(4);
+      });
+      keyListener.simple_combo('5', function(){
+         setObserver(5);
+      });
+      keyListener.simple_combo('6', function(){
+         setObserver(6);
+      });
+      keyListener.simple_combo('7', function(){
+         setObserver(7);
+      });
+      keyListener.simple_combo('8', function(){
+         setObserver(8);
+      });
+
+      // Set global observer and creation function
+      var observer = undefined;
+      function setObserver(transformationType){
+
+         // Disconnect existing observer
+         if(observer != undefined)
+            observer.disconnect();
+         // Set transformation type to default
+         if(transformationType == undefined)
+            transformationType = defaultTransformation;
+
+         // Observe the changes to the camera
+         observer = new MutationObserver(function(transformations){
+            // For each element in transformations (which comes from the MutationObserver), set camera attributes and update the target
+            transformations.forEach(function(transformation){
+               setCameraAttributes();
+               updateTarget(activeTarget, transformationType);
+            });
+         });
+
+         // I don't know what I'm doing here, Mozilla's docs told me to do it
+         var observerConfig = {
+            attributes:    true,
+            childList:     true,
+            characterData: true
+         }
+
+         // Set up the observer
+         observer.observe(camera.el, observerConfig);
+
+         // Pass it on up so it is available next time
+         return observer;
+      }
+
+      // Set the camera attributes
+      function setCameraAttributes(){
+
+         var humanCameraPosition = camera.el.getAttribute('position');
+         camera.x = humanCameraPosition.x;
+         camera.y = humanCameraPosition.y;
+         camera.z = humanCameraPosition.z;
+
+         var humanCameraRotation = camera.el.getAttribute('rotation');
+         camera.a = humanCameraRotation.x;
+         camera.b = humanCameraRotation.y;
+         camera.c = humanCameraRotation.z;
+
+      }
+
+      // Sets opacity
+      function setOpacityOfChildren(el, opacity){
+         // for each child element in the el[]
+         for(var activeChild in el){
+            // if it is an object
+            if(typeof el[activeChild] == 'object'){
+               // take the material{}
+               var material = el[activeChild].getAttribute('material');
+
+               // change its opacity
+               material.opacity = opacity;
+
+               // set the new material{}
+               el[activeChild].setAttribute('material', material);
+            }
+         }
+      }
+
+      // Toggles the rotation target
+      function toggleTarget(toggleTo){
+
+         // Turn off active target
+         setOpacityOfChildren(activeTarget.children, 0);
+
+         // If nothing is being toggled to, then just swap states
+         if(toggleTo == undefined){
+            if(activeTarget == targets[0]){
+               activeTarget = targets[1];
+            }else if(activeTarget == targets[1]){
+               activeTarget = targets[0];
+            }
+            else{
+               console.log("halp");
+            }
+         }else{
+            // otherwise, set the active target to what we are toggling to
+            activeTarget = toggleTo;
+         }
+
+         // Turn on the new active target
+         setOpacityOfChildren(activeTarget.children, 1);
+      }
+
+      function toggleBuilding(ioState){
+         if(ioState == undefined){
+            if(building.state == false){
+               building.state = true;
+            }else{
+               building.state = false;
+            }
+         }else{
+            building.state = ioState;
+         }
+
+         if(building.state == true){
+            setOpacityOfChildren(building.el.children, 1);
+         }else{
+            setOpacityOfChildren(building.el.children, 0);
+         }
+      }
+
+      function togglePillars(ioState){
+         if(ioState == undefined){
+            if(pillars.state == false){
+               pillars.state = true;
+            }else{
+               pillars.state = false;
+            }
+         }else{
+            pillars.state = ioState;
+         }
+
+         if(pillars.state == true){
+            setOpacityOfChildren(pillars.el.children, 1);
+         }else{
+            setOpacityOfChildren(pillars.el.children, 0);
+         }
+      }
+
+      function cameraPositionScalar(camera, cameraScalar){
+         return camera.x*cameraScalar[0] + " " + camera.y*cameraScalar[1] + " " + camera.z*cameraScalar[2];
+      }
+
+      function cameraRotationScalar(camera, cameraScalar){
+         return camera.a*cameraScalar[0] + " " + camera.b*cameraScalar[1] + " " + camera.c*cameraScalar[2];
+      }
+
+      function equalScalarString(scalar){
+         return scalar + ' ' + scalar + ' ' + scalar;
+      }
+
+      function resetTargetPositions(){
+         targets[0].setAttribute('position', defaultPositions[0]);
+         targets[1].setAttribute('position', defaultPositions[1]);
+      }
+
+      function resetTargetRotations(){
+         targets[0].setAttribute('rotation', defaultPositions[0]);
+         targets[1].setAttribute('rotation', defaultPositions[1]);
+      }
+
+      function toggleFog(){
+         if(fog.state){
+            scene.setAttribute('fog', 'density', 0);
+            fog.state = false;
+         }else{
+            scene.setAttribute('fog', 'density', fog.density);
+            fog.state = true;
+         }
+      }
+
+      function updateTarget(target, transformationType){
+         if(transformationType == undefined)
+            transformationType = defaultTransformation;
+
+         resetTargetPositions();
+         resetTargetRotations();
+
+         switch (transformationType){
+
+            // Rotate target with human camera rotation
+            case 1:
+               target.setAttribute('rotation', cameraRotationScalar(camera, [1, 1, 1]));
+               break;
+
+            // Rotate target with human camera rotation
+            case 8:
+               target.setAttribute('rotation', cameraRotationScalar(camera, [-1, -1, 1]));
+               break;
+
+            // Rotate target with human camera rotation
+            // includes reasonable magic numbers: 4x of horizontal rotation, 3x of vertical rotation
+            case 2:
+               target.setAttribute('rotation', cameraRotationScalar(camera, [4, 3, 1]));
+               break;
+
+            // Rotate target inversely with human camera rotation
+            // includes reasonable magic numbers: -4x of horizontal rotation, -3x of vertical rotation
+            case 3:
+               target.setAttribute('position', target.getAttribute('position'));
+               target.setAttribute('rotation', cameraRotationScalar(camera, [-4, -3, 1]));
+               break;
+
+            // Move target in x-axis based on z-position of human camera
+            case 4:
+               newPosition = target.getAttribute('position');
+               // Offset position by one meter
+               newPosition.x = camera.z - 1;
+               target.setAttribute('position', newPosition);
+               break;
+
+            // Rotate target in x-axis based on z-position of human camera
+            case 5:
+               target.setAttribute('rotation', camera.z*60 + " 0 0");
+               break;
+
+            // Move target in z-axis based on xy-axis rotation of camera
+            case 6:
+               newPosition = target.getAttribute('position');
+               // Right or down make the target come towards the initial camera
+               newPosition.z = -1 * (camera.a/10 + camera.b/60);
+               target.setAttribute('position', newPosition);
+               break;
+
+            // Scale target based on x-axis rotation
+            case 7:
+               newScaleBase = camera.a + 1;
+               if(newScaleBase > .1){
+                  newScale = equalScalarString(camera.a + 1);
+               }else{
+                  newScale = equalScalarString(.1);
+               }
+               target.setAttribute('scale', newScale);
+
+               if(newPositionCompInit == undefined){
+                  newPositionCompInit = target.getAttribute('position');
+                  newPositionComp = newPositionCompInit;
+                  centerPoint = {
+                     x: 1,
+                     y: 1,
+                     z: 1
+                  };
+               }
+               centerPoint.z = -.1;
+               centerPoint.y = .3;
+               newPositionComp.z = camera.a*centerPoint.z - 2.5;
+               newPositionComp.y = camera.a*centerPoint.y + 1.4;
+               if(newPositionComp.z > -2.5)
+                  newPositionComp.z = -2.5;
+               if(newPositionComp.y < .9)
+                  newPositionComp.y = .9;
+               target.setAttribute('position', newPositionComp);
+               break;
+
+            default:
+               break;
+         }
+      }
+
+   </script>

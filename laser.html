@@ -29,10 +29,10 @@
       <!--<a-entity position="3.076 0 -0.854" rotation="-9.969 42.055 0"
         id="camera">-->
         <!--showLine: true;-->
-        <a-entity geometry="primitive: circle; radius: 0.005;" material="color: #FFF;" position="0 0 -0.75"></a-entity>
+        <!--<a-entity geometry="primitive: circle; radius: 0.005;" material="color: #FFF;" position="0 0 -0.75"></a-entity>-->
 
         <a-entity id="cardInfo" geometry="width:0.44;height:0.35;primitive:plane" material="shader:flat;color:#FFF"
-          position="0.9 0.002 -0.8">
+          position="0.9 0.002 -1.6">
           <!--<a-entity id="cardTitle" color="#4B5154" position="0 0.11 0" align="center"
             baseline="top" anchor="align" text="anchor:align;width:1;color:#4B5154;value:Bradesco;align:center;baseline:top"></a-entity>-->
           <a-text id="cardTitle" color="#4B5154" position="0 0.13 0" align="center" width="1"
@@ -75,7 +75,7 @@
 
     </a-entity>
     <a-entity id="treemapContainer" class="intersectable" treemap-generator drag-rotate="speed: 8;"
-      position="0 0 -3" rotation="20 0 0"></a-entity>
+      position="0 0 -4" rotation="40 0 0"></a-entity>
 
     <a-entity position="0 -0.5 -3">
       <a-collada-model src="#engine" rotation="90 0 0" scale="18 18 18"></a-collada-model>
