@@ -1,13 +1,17 @@
 {
   "status": "verified",
-  "checked_at": "2026-08-20T00:33:47Z",
+  "checked_at": "2026-08-20T00:39:34Z",
   "public_url": "https://fabiodr.github.io/reducewatch-proto1/",
-  "published_commit": "74550df9b9eed2642cc69bbed5ae92bc5750e07e",
-  "artifact_sha256": "61ef956edbfcb8e04a0d588a1dd39f0d885ffe0824ed2bf497d4c5984952ba97",
+  "published_commit": "963a9df1aecb580ee84f8284d389eed521df2179",
+  "source_head_sha": "35afae3476048ecddb894a8f4d62fc2748ed7223",
+  "candidate_merge_sha": "d690948b67fccd5da6dc5dc4642d6087648433af",
+  "artifact_id": 9388771030,
+  "artifact_sha256": "3f80d458dd8d5841109509f29cf90f8fca55042ef41f89233318413ea6c7a9ae",
   "checks": [
-    "index HTTP success",
+    "index HTTPS success and exact SHA-256",
     "deployment metadata matched",
-    "JavaScript asset HTTP success",
-    "CSS asset HTTP success"
+    "JavaScript HTTPS success and exact SHA-256",
+    "CSS HTTPS success and exact SHA-256",
+    "MapLibre worker HTTPS success and exact SHA-256"
   ]
 }
