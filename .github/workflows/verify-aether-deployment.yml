@@ -4,11 +4,12 @@ on:
   push:
     branches: [master]
     paths:
+      - reducewatch-proto1/**
       - .github/workflows/verify-aether-deployment.yml
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: verify-aether-pages
@@ -24,38 +25,63 @@ jobs:
         with:
           ref: master
 
-      - name: Verify the real HTTPS endpoint and exact artifact bytes
-        env:
-          SITE_URL: https://fabiodr.github.io/reducewatch-proto1/
-          EXPECTED_ARTIFACT_SHA256: 3f80d458dd8d5841109509f29cf90f8fca55042ef41f89233318413ea6c7a9ae
-          EXPECTED_MERGE_COMMIT: 80398fa0a171cb5123c1b3134faaa22b8ee791f0
-          EXPECTED_INDEX_SHA256: cc2f83ce26cbf4bcf6a7c65d1f50facd0da3c19f27866810f109b4ab05968243
-          EXPECTED_SCRIPT_SHA256: ec43793266a1507f3d18ff41d87754b97eec386247616504bb7bbe1aa9915d9e
-          EXPECTED_STYLE_SHA256: 40f5e03cd55b1246a8fe7f46944a1e9f40c529ff5c0b35d280b0f54051fc34b5
-          EXPECTED_WORKER_SHA256: 5d486ed10fde8915b68bdb6e69ca7e847973369bb41f591870c89c240fa792ae
+      - name: Load deployment contract
+        shell: bash
+        run: |
+          python3 <<'PY'
+          import json
+          from pathlib import Path
+
+          deployment = json.loads(Path("reducewatch-proto1/deployment.json").read_text())
+          identity = deployment["dist_identity"]
+          required = {
+              "SITE_URL": deployment["public_url"],
+              "ARTIFACT_ID": str(deployment["artifact_id"]),
+              "ARTIFACT_SHA256": deployment["artifact_sha256"],
+              "SOURCE_HEAD_SHA": deployment["source_head_sha"],
+              "CANDIDATE_MERGE_SHA": deployment["candidate_merge_sha"],
+              "MERGE_COMMIT_SHA": deployment["merge_commit_sha"],
+              "INDEX_PATH": "index.html",
+              "INDEX_SHA256": identity["index.html"],
+              "SCRIPT_PATH": next(key for key in identity if key.endswith(".js") and "worker" not in key),
+              "STYLE_PATH": next(key for key in identity if key.endswith(".css")),
+              "WORKER_PATH": next(key for key in identity if "worker" in key and key.endswith(".js")),
+          }
+          required["SCRIPT_SHA256"] = identity[required["SCRIPT_PATH"]]
+          required["STYLE_SHA256"] = identity[required["STYLE_PATH"]]
+          required["WORKER_SHA256"] = identity[required["WORKER_PATH"]]
+
+          with Path("/tmp/deployment-env").open("w") as handle:
+              for key, value in required.items():
+                  handle.write(f"{key}={value}\n")
+          PY
+          cat /tmp/deployment-env >> "$GITHUB_ENV"
+
+      - name: Verify real HTTPS origin and exact artifact bytes
+        shell: bash
         run: |
           verified=false
           for attempt in $(seq 1 72); do
             echo "HTTPS verification attempt $attempt/72"
-            rm -f /tmp/deployment.json /tmp/index.html /tmp/app.js /tmp/app.css /tmp/worker.js
+            rm -rf /tmp/aether-verification
+            mkdir -p /tmp/aether-verification
 
             if curl --fail --silent --show-error --location --connect-timeout 10 --max-time 30 \
-                "${SITE_URL}deployment.json" -o /tmp/deployment.json \
-              && grep --fixed-strings --quiet "$EXPECTED_ARTIFACT_SHA256" /tmp/deployment.json \
-              && grep --fixed-strings --quiet "$EXPECTED_MERGE_COMMIT" /tmp/deployment.json \
+                "${SITE_URL}deployment.json" -o /tmp/aether-verification/deployment.json \
+              && cmp --silent reducewatch-proto1/deployment.json /tmp/aether-verification/deployment.json \
               && curl --fail --silent --show-error --location --connect-timeout 10 --max-time 30 \
-                "$SITE_URL" -o /tmp/index.html \
-              && grep --fixed-strings --quiet "Aether — Climate Futures Atlas" /tmp/index.html \
+                "${SITE_URL}${INDEX_PATH}" -o /tmp/aether-verification/index.html \
+              && grep --fixed-strings --quiet "Aether — Climate Futures Atlas" /tmp/aether-verification/index.html \
               && curl --fail --silent --show-error --location --connect-timeout 10 --max-time 30 \
-                "${SITE_URL}assets/index-CZnudtFU.js" -o /tmp/app.js \
+                "${SITE_URL}${SCRIPT_PATH}" -o /tmp/aether-verification/app.js \
               && curl --fail --silent --show-error --location --connect-timeout 10 --max-time 30 \
-                "${SITE_URL}assets/index-CkQqKH4J.css" -o /tmp/app.css \
+                "${SITE_URL}${STYLE_PATH}" -o /tmp/aether-verification/app.css \
               && curl --fail --silent --show-error --location --connect-timeout 10 --max-time 30 \
-                "${SITE_URL}assets/maplibre-gl-worker-BtpYDTzw.js" -o /tmp/worker.js \
-              && echo "$EXPECTED_INDEX_SHA256  /tmp/index.html" | sha256sum --check --strict \
-              && echo "$EXPECTED_SCRIPT_SHA256  /tmp/app.js" | sha256sum --check --strict \
-              && echo "$EXPECTED_STYLE_SHA256  /tmp/app.css" | sha256sum --check --strict \
-              && echo "$EXPECTED_WORKER_SHA256  /tmp/worker.js" | sha256sum --check --strict; then
+                "${SITE_URL}${WORKER_PATH}" -o /tmp/aether-verification/worker.js \
+              && echo "$INDEX_SHA256  /tmp/aether-verification/index.html" | sha256sum --check --strict \
+              && echo "$SCRIPT_SHA256  /tmp/aether-verification/app.js" | sha256sum --check --strict \
+              && echo "$STYLE_SHA256  /tmp/aether-verification/app.css" | sha256sum --check --strict \
+              && echo "$WORKER_SHA256  /tmp/aether-verification/worker.js" | sha256sum --check --strict; then
               verified=true
               break
             fi
@@ -63,39 +89,50 @@ jobs:
           done
           test "$verified" = true
 
-      - name: Record successful verification
-        env:
-          SITE_URL: https://fabiodr.github.io/reducewatch-proto1/
-          PUBLISHED_COMMIT: 3d8dd176da9a444271e270edd8ceb1b871714d86
-          SOURCE_HEAD_SHA: 35afae3476048ecddb894a8f4d62fc2748ed7223
-          CANDIDATE_MERGE_SHA: d690948b67fccd5da6dc5dc4642d6087648433af
-          MERGE_COMMIT_SHA: 80398fa0a171cb5123c1b3134faaa22b8ee791f0
-          ARTIFACT_ID: "9388771030"
-          ARTIFACT_SHA256: 3f80d458dd8d5841109509f29cf90f8fca55042ef41f89233318413ea6c7a9ae
+      - name: Create verification evidence
+        shell: bash
         run: |
           checked_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          cat > reducewatch-proto1/verification.json <<JSON
+          cat > /tmp/aether-verification/verification.json <<JSON
           {
             "status": "verified",
             "checked_at": "$checked_at",
             "public_url": "$SITE_URL",
-            "published_commit": "$PUBLISHED_COMMIT",
+            "mirror_commit_sha": "$GITHUB_SHA",
             "source_head_sha": "$SOURCE_HEAD_SHA",
             "candidate_merge_sha": "$CANDIDATE_MERGE_SHA",
             "merge_commit_sha": "$MERGE_COMMIT_SHA",
             "artifact_id": $ARTIFACT_ID,
             "artifact_sha256": "$ARTIFACT_SHA256",
             "checks": [
+              "deployment metadata exact match",
               "index HTTPS success and exact SHA-256",
-              "deployment metadata matched artifact and merge commit",
-              "JavaScript HTTPS success and exact SHA-256",
-              "CSS HTTPS success and exact SHA-256",
+              "application JavaScript HTTPS success and exact SHA-256",
+              "application CSS HTTPS success and exact SHA-256",
               "MapLibre worker HTTPS success and exact SHA-256"
             ]
           }
           JSON
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- reducewatch-proto1/verification.json
-          git commit -m "verify merged Aether deployment"
-          git push origin HEAD:master
+
+          cat >> "$GITHUB_STEP_SUMMARY" <<MARKDOWN
+          ## Aether Pages verification
+
+          - Status: **verified**
+          - Public URL: $SITE_URL
+          - Mirror commit: \\`$GITHUB_SHA\`
+          - Source merge: \\`$MERGE_COMMIT_SHA\`
+          - Candidate merge: \\`$CANDIDATE_MERGE_SHA\`
+          - Artifact ID: \\`$ARTIFACT_ID\`
+          - Artifact SHA-256: \\`$ARTIFACT_SHA256\`
+          - Checked at: $checked_at
+
+          Exact HTTPS hashes passed for the HTML, application JavaScript, CSS, and MapLibre worker. The verifier did not modify the repository.
+          MARKDOWN
+
+      - name: Upload verification evidence
+        uses: actions/upload-artifact@v7
+        with:
+          name: aether-pages-verification-${{ github.sha }}
+          path: /tmp/aether-verification/verification.json
+          if-no-files-found: error
+          retention-days: 30
