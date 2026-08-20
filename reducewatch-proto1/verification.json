@@ -1,0 +1,13 @@
+{
+  "status": "verified",
+  "checked_at": "2026-08-20T00:33:47Z",
+  "public_url": "https://fabiodr.github.io/reducewatch-proto1/",
+  "published_commit": "74550df9b9eed2642cc69bbed5ae92bc5750e07e",
+  "artifact_sha256": "61ef956edbfcb8e04a0d588a1dd39f0d885ffe0824ed2bf497d4c5984952ba97",
+  "checks": [
+    "index HTTP success",
+    "deployment metadata matched",
+    "JavaScript asset HTTP success",
+    "CSS asset HTTP success"
+  ]
+}
