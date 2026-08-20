@@ -1,0 +1,27 @@
+{
+  "artifact_id": 9394889735,
+  "artifact_name": "aether-production-fb1619aa7f87b317a49e762d10876634e752a378",
+  "artifact_sha256": "7d16a9d5ddf0d915e97cf6e17fd455433c0995eff81ac543f4fbdcbcd29c7742",
+  "checked_at": "2026-08-20T05:56:54Z",
+  "checks": [
+    "private repository Pages manifest matched merged main",
+    "validation run and retained artifact identity present",
+    "every inventoried file matched SHA-256 and byte size",
+    "HTML, JavaScript, CSS, SVG content types matched",
+    "no production source maps were exposed"
+  ],
+  "public_url": "https://fabiodr.github.io/reducewatch-proto1/",
+  "source_ref": "main",
+  "source_repository": "fabiodr/reducewatch-proto1",
+  "source_sha": "fb1619aa7f87b317a49e762d10876634e752a378",
+  "status": "verified",
+  "validation_workflow_run_id": 32336708882,
+  "verified_file_count": 5,
+  "verified_files": [
+    "assets/index-CR3ZptL6.js",
+    "assets/index-CkQqKH4J.css",
+    "assets/maplibre-gl-worker-BtpYDTzw.js",
+    "favicon.svg",
+    "index.html"
+  ]
+}
