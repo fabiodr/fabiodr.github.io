@@ -2,7 +2,17 @@
   "name": "Aether Climate Futures Atlas",
   "source_repository": "fabiodr/reducewatch-proto1",
   "source_pull_request": 2,
-  "validated_source_head": "5e023e9888583a221b0a2ce0c5f31fef9f181677",
-  "artifact_sha256": "61ef956edbfcb8e04a0d588a1dd39f0d885ffe0824ed2bf497d4c5984952ba97",
+  "source_head_sha": "35afae3476048ecddb894a8f4d62fc2748ed7223",
+  "candidate_merge_sha": "d690948b67fccd5da6dc5dc4642d6087648433af",
+  "workflow_run_id": 32317975126,
+  "artifact_id": 9388771030,
+  "artifact_name": "aether-production-d690948b67fccd5da6dc5dc4642d6087648433af",
+  "artifact_sha256": "3f80d458dd8d5841109509f29cf90f8fca55042ef41f89233318413ea6c7a9ae",
+  "dist_identity": {
+    "index.html": "cc2f83ce26cbf4bcf6a7c65d1f50facd0da3c19f27866810f109b4ab05968243",
+    "assets/index-CZnudtFU.js": "ec43793266a1507f3d18ff41d87754b97eec386247616504bb7bbe1aa9915d9e",
+    "assets/index-CkQqKH4J.css": "40f5e03cd55b1246a8fe7f46944a1e9f40c529ff5c0b35d280b0f54051fc34b5",
+    "assets/maplibre-gl-worker-BtpYDTzw.js": "5d486ed10fde8915b68bdb6e69ca7e847973369bb41f591870c89c240fa792ae"
+  },
   "public_url": "https://fabiodr.github.io/reducewatch-proto1/"
 }
