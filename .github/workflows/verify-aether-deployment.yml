@@ -1,0 +1,83 @@
+name: Verify Aether Pages endpoint
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - .github/workflows/verify-aether-deployment.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: verify-aether-pages
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout published site
+        uses: actions/checkout@v6
+        with:
+          ref: master
+
+      - name: Verify the real HTTPS endpoint and assets
+        env:
+          SITE_URL: https://fabiodr.github.io/reducewatch-proto1/
+          EXPECTED_ARTIFACT_SHA256: 61ef956edbfcb8e04a0d588a1dd39f0d885ffe0824ed2bf497d4c5984952ba97
+          PUBLISHED_COMMIT: 74550df9b9eed2642cc69bbed5ae92bc5750e07e
+        run: |
+          verified=false
+          for attempt in $(seq 1 72); do
+            echo "HTTPS verification attempt $attempt/72"
+            if curl --fail --silent --show-error --location --connect-timeout 10 --max-time 30 \
+                "${SITE_URL}deployment.json" -o /tmp/deployment.json \
+              && grep --fixed-strings --quiet "$EXPECTED_ARTIFACT_SHA256" /tmp/deployment.json \
+              && curl --fail --silent --show-error --location --connect-timeout 10 --max-time 30 \
+                "$SITE_URL" -o /tmp/index.html \
+              && grep --fixed-strings --quiet "Aether — Climate Futures Atlas" /tmp/index.html; then
+              script_path=$(grep -oE 'src="\./assets/[^"]+\.js"' /tmp/index.html | head -1 | sed -E 's/^src="\.\///; s/"$//')
+              style_path=$(grep -oE 'href="\./assets/[^"]+\.css"' /tmp/index.html | head -1 | sed -E 's/^href="\.\///; s/"$//')
+              test -n "$script_path"
+              test -n "$style_path"
+              curl --fail --silent --show-error --location --head --connect-timeout 10 --max-time 30 \
+                "${SITE_URL}${script_path}"
+              curl --fail --silent --show-error --location --head --connect-timeout 10 --max-time 30 \
+                "${SITE_URL}${style_path}"
+              verified=true
+              break
+            fi
+            sleep 10
+          done
+          test "$verified" = true
+
+      - name: Record successful verification
+        env:
+          SITE_URL: https://fabiodr.github.io/reducewatch-proto1/
+          PUBLISHED_COMMIT: 74550df9b9eed2642cc69bbed5ae92bc5750e07e
+          ARTIFACT_SHA256: 61ef956edbfcb8e04a0d588a1dd39f0d885ffe0824ed2bf497d4c5984952ba97
+        run: |
+          checked_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          cat > reducewatch-proto1/verification.json <<JSON
+          {
+            "status": "verified",
+            "checked_at": "$checked_at",
+            "public_url": "$SITE_URL",
+            "published_commit": "$PUBLISHED_COMMIT",
+            "artifact_sha256": "$ARTIFACT_SHA256",
+            "checks": [
+              "index HTTP success",
+              "deployment metadata matched",
+              "JavaScript asset HTTP success",
+              "CSS asset HTTP success"
+            ]
+          }
+          JSON
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- reducewatch-proto1/verification.json
+          git commit -m "record Aether Pages verification"
+          git push origin HEAD:master
