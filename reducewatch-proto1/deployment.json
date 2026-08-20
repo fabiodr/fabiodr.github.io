@@ -1,0 +1,8 @@
+{
+  "name": "Aether Climate Futures Atlas",
+  "source_repository": "fabiodr/reducewatch-proto1",
+  "source_pull_request": 2,
+  "validated_source_head": "5e023e9888583a221b0a2ce0c5f31fef9f181677",
+  "artifact_sha256": "61ef956edbfcb8e04a0d588a1dd39f0d885ffe0824ed2bf497d4c5984952ba97",
+  "public_url": "https://fabiodr.github.io/reducewatch-proto1/"
+}
