@@ -24,29 +24,36 @@ jobs:
         with:
           ref: master
 
-      - name: Verify the real HTTPS endpoint and assets
+      - name: Verify the real HTTPS endpoint and exact artifact bytes
         env:
           SITE_URL: https://fabiodr.github.io/reducewatch-proto1/
-          EXPECTED_ARTIFACT_SHA256: 61ef956edbfcb8e04a0d588a1dd39f0d885ffe0824ed2bf497d4c5984952ba97
-          PUBLISHED_COMMIT: 74550df9b9eed2642cc69bbed5ae92bc5750e07e
+          EXPECTED_ARTIFACT_SHA256: 3f80d458dd8d5841109509f29cf90f8fca55042ef41f89233318413ea6c7a9ae
+          EXPECTED_INDEX_SHA256: cc2f83ce26cbf4bcf6a7c65d1f50facd0da3c19f27866810f109b4ab05968243
+          EXPECTED_SCRIPT_SHA256: ec43793266a1507f3d18ff41d87754b97eec386247616504bb7bbe1aa9915d9e
+          EXPECTED_STYLE_SHA256: 40f5e03cd55b1246a8fe7f46944a1e9f40c529ff5c0b35d280b0f54051fc34b5
+          EXPECTED_WORKER_SHA256: 5d486ed10fde8915b68bdb6e69ca7e847973369bb41f591870c89c240fa792ae
         run: |
           verified=false
           for attempt in $(seq 1 72); do
             echo "HTTPS verification attempt $attempt/72"
+            rm -f /tmp/deployment.json /tmp/index.html /tmp/app.js /tmp/app.css /tmp/worker.js
+
             if curl --fail --silent --show-error --location --connect-timeout 10 --max-time 30 \
                 "${SITE_URL}deployment.json" -o /tmp/deployment.json \
               && grep --fixed-strings --quiet "$EXPECTED_ARTIFACT_SHA256" /tmp/deployment.json \
               && curl --fail --silent --show-error --location --connect-timeout 10 --max-time 30 \
                 "$SITE_URL" -o /tmp/index.html \
-              && grep --fixed-strings --quiet "Aether — Climate Futures Atlas" /tmp/index.html; then
-              script_path=$(grep -oE 'src="\./assets/[^"]+\.js"' /tmp/index.html | head -1 | sed -E 's/^src="\.\///; s/"$//')
-              style_path=$(grep -oE 'href="\./assets/[^"]+\.css"' /tmp/index.html | head -1 | sed -E 's/^href="\.\///; s/"$//')
-              test -n "$script_path"
-              test -n "$style_path"
-              curl --fail --silent --show-error --location --head --connect-timeout 10 --max-time 30 \
-                "${SITE_URL}${script_path}"
-              curl --fail --silent --show-error --location --head --connect-timeout 10 --max-time 30 \
-                "${SITE_URL}${style_path}"
+              && grep --fixed-strings --quiet "Aether — Climate Futures Atlas" /tmp/index.html \
+              && curl --fail --silent --show-error --location --connect-timeout 10 --max-time 30 \
+                "${SITE_URL}assets/index-CZnudtFU.js" -o /tmp/app.js \
+              && curl --fail --silent --show-error --location --connect-timeout 10 --max-time 30 \
+                "${SITE_URL}assets/index-CkQqKH4J.css" -o /tmp/app.css \
+              && curl --fail --silent --show-error --location --connect-timeout 10 --max-time 30 \
+                "${SITE_URL}assets/maplibre-gl-worker-BtpYDTzw.js" -o /tmp/worker.js \
+              && echo "$EXPECTED_INDEX_SHA256  /tmp/index.html" | sha256sum --check --strict \
+              && echo "$EXPECTED_SCRIPT_SHA256  /tmp/app.js" | sha256sum --check --strict \
+              && echo "$EXPECTED_STYLE_SHA256  /tmp/app.css" | sha256sum --check --strict \
+              && echo "$EXPECTED_WORKER_SHA256  /tmp/worker.js" | sha256sum --check --strict; then
               verified=true
               break
             fi
@@ -57,8 +64,11 @@ jobs:
       - name: Record successful verification
         env:
           SITE_URL: https://fabiodr.github.io/reducewatch-proto1/
-          PUBLISHED_COMMIT: 74550df9b9eed2642cc69bbed5ae92bc5750e07e
-          ARTIFACT_SHA256: 61ef956edbfcb8e04a0d588a1dd39f0d885ffe0824ed2bf497d4c5984952ba97
+          PUBLISHED_COMMIT: 963a9df1aecb580ee84f8284d389eed521df2179
+          SOURCE_HEAD_SHA: 35afae3476048ecddb894a8f4d62fc2748ed7223
+          CANDIDATE_MERGE_SHA: d690948b67fccd5da6dc5dc4642d6087648433af
+          ARTIFACT_ID: "9388771030"
+          ARTIFACT_SHA256: 3f80d458dd8d5841109509f29cf90f8fca55042ef41f89233318413ea6c7a9ae
         run: |
           checked_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           cat > reducewatch-proto1/verification.json <<JSON
@@ -67,17 +77,21 @@ jobs:
             "checked_at": "$checked_at",
             "public_url": "$SITE_URL",
             "published_commit": "$PUBLISHED_COMMIT",
+            "source_head_sha": "$SOURCE_HEAD_SHA",
+            "candidate_merge_sha": "$CANDIDATE_MERGE_SHA",
+            "artifact_id": $ARTIFACT_ID,
             "artifact_sha256": "$ARTIFACT_SHA256",
             "checks": [
-              "index HTTP success",
+              "index HTTPS success and exact SHA-256",
               "deployment metadata matched",
-              "JavaScript asset HTTP success",
-              "CSS asset HTTP success"
+              "JavaScript HTTPS success and exact SHA-256",
+              "CSS HTTPS success and exact SHA-256",
+              "MapLibre worker HTTPS success and exact SHA-256"
             ]
           }
           JSON
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- reducewatch-proto1/verification.json
-          git commit -m "record Aether Pages verification"
+          git commit -m "verify final Aether Pages artifact"
           git push origin HEAD:master
