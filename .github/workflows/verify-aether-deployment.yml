@@ -28,6 +28,7 @@ jobs:
         env:
           SITE_URL: https://fabiodr.github.io/reducewatch-proto1/
           EXPECTED_ARTIFACT_SHA256: 3f80d458dd8d5841109509f29cf90f8fca55042ef41f89233318413ea6c7a9ae
+          EXPECTED_MERGE_COMMIT: 80398fa0a171cb5123c1b3134faaa22b8ee791f0
           EXPECTED_INDEX_SHA256: cc2f83ce26cbf4bcf6a7c65d1f50facd0da3c19f27866810f109b4ab05968243
           EXPECTED_SCRIPT_SHA256: ec43793266a1507f3d18ff41d87754b97eec386247616504bb7bbe1aa9915d9e
           EXPECTED_STYLE_SHA256: 40f5e03cd55b1246a8fe7f46944a1e9f40c529ff5c0b35d280b0f54051fc34b5
@@ -41,6 +42,7 @@ jobs:
             if curl --fail --silent --show-error --location --connect-timeout 10 --max-time 30 \
                 "${SITE_URL}deployment.json" -o /tmp/deployment.json \
               && grep --fixed-strings --quiet "$EXPECTED_ARTIFACT_SHA256" /tmp/deployment.json \
+              && grep --fixed-strings --quiet "$EXPECTED_MERGE_COMMIT" /tmp/deployment.json \
               && curl --fail --silent --show-error --location --connect-timeout 10 --max-time 30 \
                 "$SITE_URL" -o /tmp/index.html \
               && grep --fixed-strings --quiet "Aether — Climate Futures Atlas" /tmp/index.html \
@@ -64,9 +66,10 @@ jobs:
       - name: Record successful verification
         env:
           SITE_URL: https://fabiodr.github.io/reducewatch-proto1/
-          PUBLISHED_COMMIT: 963a9df1aecb580ee84f8284d389eed521df2179
+          PUBLISHED_COMMIT: 3d8dd176da9a444271e270edd8ceb1b871714d86
           SOURCE_HEAD_SHA: 35afae3476048ecddb894a8f4d62fc2748ed7223
           CANDIDATE_MERGE_SHA: d690948b67fccd5da6dc5dc4642d6087648433af
+          MERGE_COMMIT_SHA: 80398fa0a171cb5123c1b3134faaa22b8ee791f0
           ARTIFACT_ID: "9388771030"
           ARTIFACT_SHA256: 3f80d458dd8d5841109509f29cf90f8fca55042ef41f89233318413ea6c7a9ae
         run: |
@@ -79,11 +82,12 @@ jobs:
             "published_commit": "$PUBLISHED_COMMIT",
             "source_head_sha": "$SOURCE_HEAD_SHA",
             "candidate_merge_sha": "$CANDIDATE_MERGE_SHA",
+            "merge_commit_sha": "$MERGE_COMMIT_SHA",
             "artifact_id": $ARTIFACT_ID,
             "artifact_sha256": "$ARTIFACT_SHA256",
             "checks": [
               "index HTTPS success and exact SHA-256",
-              "deployment metadata matched",
+              "deployment metadata matched artifact and merge commit",
               "JavaScript HTTPS success and exact SHA-256",
               "CSS HTTPS success and exact SHA-256",
               "MapLibre worker HTTPS success and exact SHA-256"
@@ -93,5 +97,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- reducewatch-proto1/verification.json
-          git commit -m "verify final Aether Pages artifact"
+          git commit -m "verify merged Aether deployment"
           git push origin HEAD:master
