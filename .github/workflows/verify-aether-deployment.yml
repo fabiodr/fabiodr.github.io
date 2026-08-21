@@ -21,7 +21,7 @@ jobs:
     env:
       SITE_URL: https://fabiodr.github.io/reducewatch-proto1/
       EXPECTED_REPOSITORY: fabiodr/reducewatch-proto1
-      EXPECTED_SOURCE_SHA: fb1619aa7f87b317a49e762d10876634e752a378
+      EXPECTED_SOURCE_SHA: 4c531c8649002e91cd4df4ca2c1b0e2c9610afe3
       VERIFY_ATTEMPTS: "30"
       VERIFY_INTERVAL_SECONDS: "20"
     steps:
