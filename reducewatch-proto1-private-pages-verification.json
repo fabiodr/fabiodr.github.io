@@ -1,8 +1,8 @@
 {
-  "artifact_id": 9394889735,
-  "artifact_name": "aether-production-fb1619aa7f87b317a49e762d10876634e752a378",
-  "artifact_sha256": "7d16a9d5ddf0d915e97cf6e17fd455433c0995eff81ac543f4fbdcbcd29c7742",
-  "checked_at": "2026-08-20T05:56:54Z",
+  "artifact_id": 9434662099,
+  "artifact_name": "aether-production-4c531c8649002e91cd4df4ca2c1b0e2c9610afe3",
+  "artifact_sha256": "d370008e78a7437c0dd4324b2cac3c4bc0861e045f8e41424a2b226c70b058ea",
+  "checked_at": "2026-08-21T04:49:09Z",
   "checks": [
     "private repository Pages manifest matched merged main",
     "validation run and retained artifact identity present",
@@ -13,13 +13,13 @@
   "public_url": "https://fabiodr.github.io/reducewatch-proto1/",
   "source_ref": "main",
   "source_repository": "fabiodr/reducewatch-proto1",
-  "source_sha": "fb1619aa7f87b317a49e762d10876634e752a378",
+  "source_sha": "4c531c8649002e91cd4df4ca2c1b0e2c9610afe3",
   "status": "verified",
-  "validation_workflow_run_id": 32336708882,
+  "validation_workflow_run_id": 32447853274,
   "verified_file_count": 5,
   "verified_files": [
-    "assets/index-CR3ZptL6.js",
-    "assets/index-CkQqKH4J.css",
+    "assets/index-BRJxMR5y.js",
+    "assets/index-DbjlhFC0.css",
     "assets/maplibre-gl-worker-BtpYDTzw.js",
     "favicon.svg",
     "index.html"
